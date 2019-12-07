@@ -3,33 +3,62 @@
 <head>
     <#assign cmg = request.contextPath />
     <meta charset="UTF-8">
-    <title>清分管理</title>
+    <title>补货编辑</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
 </head>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">交易支付状态修改</h4>
 </div>
 
 <div class="modal-body">
 
     <form id="dmodalForm" class="form-horizontal">
 
+        <input class="form-control" name="skuId" id="skuId" type="text" value="${Good.skuId!''}"/>
+
         <div class="form-group">
-            <label class="control-label col-sm-2">交易支付流水号:</label>
+            <label class="control-label col-sm-2">货品名称:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="tradePayId" id="tradePayId" readOnly="readOnly" type="text" value="${tradePayId!''}"/>
-                <input name="cancel" id="cancel" type="text" hidden="hidden" value="${cancel!''}"/>
+                <input class="form-control" name="goodsName" id="goodsName" type="text" value="${Good.goodsName!''}"/>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">最小数量:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="miniOrder" id="miniOrder" type="text" value="${Good.miniOrder!''}"/>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2">备注:</label>
+            <label class="control-label col-sm-2">安全库存:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="remark" id="remark" type="text" value="${remark!''}"/>
+                <input class="form-control" name="saveNum" id="saveNum" type="text" value="${Good.saveNum!''}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">当前库存:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="remnantNum" id="remnantNum" type="text" value="${Good.remnantNum!''}"/>
             </div>
 
         </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">消耗速率:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="consumeRatio" id="consumeRatio" type="text" value="${Good.consumeRatio!''}"/>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">消耗周期:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="consumeCycle" id="consumeCycle" type="text" value="${Good.consumeCycle!''}"/>
+            </div>
+
+        </div>
+
 
     </form>
 
@@ -53,7 +82,7 @@
 
             var layerIndex;
             $.ajax({
-                url: "${cmg}/clearing/clearingUpdate",
+                url: "${cmg}/update",
                 data: params,
                 timeout: 10000,
                 type: "post",
@@ -68,7 +97,7 @@
                         layer.msg(result.msg);
                         setTimeout(function(){
                             $('#query').click();
-                            $('#clearingEdit').modal('hide');
+                            $('#goodEdit').modal('hide');
                         },500);
                     }else{
                         layer.msg(result.msg);

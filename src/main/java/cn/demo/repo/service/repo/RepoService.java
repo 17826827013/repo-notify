@@ -64,6 +64,7 @@ public class RepoService implements BaseAnalysisExcel {
     public AjaxResult updateData(String skuId,Good good){
         good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
         RepoData.CacheDataBase.put(skuId,good);
+        storageJSONData(RepoData.CacheDataBase);
         return AjaxResult.success();
     }
 
@@ -71,11 +72,13 @@ public class RepoService implements BaseAnalysisExcel {
         good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
         good.setCreateTime(DateUtil.currentDate4yyyyMMdd());
         RepoData.CacheDataBase.put(good.getSkuId(),good);
+        storageJSONData(RepoData.CacheDataBase);
         return AjaxResult.success();
     }
 
     public AjaxResult delete(String skuId){
         RepoData.CacheDataBase.remove(skuId);
+        storageJSONData(RepoData.CacheDataBase);
         return AjaxResult.success();
     }
 

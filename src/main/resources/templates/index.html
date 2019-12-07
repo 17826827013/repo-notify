@@ -164,20 +164,31 @@
                 width : 100,
                 align : 'center'
             },{
-                field : 'cstNo',
+                field : 'consumeRatio',
                 title : '消耗速率',
                 width : 130,
                 align : 'center'
             },{
-                field : 'orderId',
+                field : 'consumeCycle',
+                title : '消耗周期',
+                width : 130,
+                align : 'center'
+            },{
+                field : 'remnantNum',
                 title : '当前库存',
                 width : 150,
-                align : 'center'
+                align : 'center',
+                formatter:function (value,row) {
+
+                }
             },{
                 field : 'oriOrderId',
                 title : '是否需要补货',
                 width : 150,
-                align : 'center'
+                align : 'center',
+                formatter:function (value,row) {
+
+                }
             }],
             onDblClickRow: function (row, $element) {
 

@@ -25,7 +25,7 @@ logging:
     com.example.miaosha_idea: TRACE
     org.springframework: WARN
 server:
-  port: 80
+  port: 8080
   servlet:
     context-path: /repo
 

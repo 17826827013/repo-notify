@@ -41,7 +41,14 @@ public class RepoController {
     }
 
     @RequestMapping("/toUpdate")
-    public String toUpdatePage(String skuId){
+    public String toUpdatePage(String skuId,HttpServletRequest request){
+        request.setAttribute("Good",RepoData.CacheDataBase.get(skuId));
+        return "edit";
+    }
+
+    @RequestMapping("/toSave")
+    public String toSavePage(){
+
         return "edit";
     }
 
@@ -64,21 +71,19 @@ public class RepoController {
     }
 
     @RequestMapping("/import")
+    @ResponseBody
     public AjaxResult importData(){
         return AjaxResult.success();
     }
 
-    @RequestMapping("/toSave")
-    public String toSavePage(){
-        return null;
-    }
-
     @RequestMapping("/save")
+    @ResponseBody
     public AjaxResult saveData(){
         return AjaxResult.success();
     }
 
     @RequestMapping("/update")
+    @ResponseBody
     public AjaxResult updateData(String skuId,Good good){
         return repoService.updateData(skuId,good);
     }
