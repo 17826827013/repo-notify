@@ -20,7 +20,7 @@ public class Good implements Serializable {
     private BigDecimal miniOrder;
     /**安全库存*/
     private BigDecimal safeNum;
-    /**库存量*/
+    /**上次补货库存*/
     private BigDecimal remnantNum;
     /**消耗速率*/
     private BigDecimal consumeRatio;

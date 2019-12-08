@@ -193,13 +193,15 @@ public class RepoService implements BaseAnalysisExcel {
             } else {
                 BigDecimal days = null;
                 try {
-                    days = new BigDecimal(DateUtil.daysBetween(DateUtil.currentDate4yyyyMMdd(), g.getUpdateTime()));
+                    days = new BigDecimal(DateUtil.daysBetween(g.getUpdateTime(),DateUtil.currentDate4yyyyMMdd()));
 
                     BigDecimal[] results = days.divideAndRemainder(g.getConsumeCycle());
-                    if (results.length == 1) {
+                    if (results.length > 0) {
                         //消耗量计算
-                        BigDecimal cons = results[0].divide(g.getConsumeRatio());
-                        g.setIsPadding(g.getSafeNum().compareTo(cons) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+                        BigDecimal cons = results[0].multiply(g.getConsumeRatio());
+                        BigDecimal remnantNum = g.getRemnantNum();
+                        //安全库存  和  (上次补货库存-消耗量) 进行比较
+                        g.setIsPadding(g.getSafeNum().compareTo(remnantNum.subtract(cons)) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
                     }
                 } catch (Exception e) {
                     log.error("比较计算失败", e);
