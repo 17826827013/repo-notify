@@ -50,7 +50,7 @@
 
         <div id="toolbar" class="btn-group">
           <a href="javascript:;" class="btn btn-primary" id="edit" title="编辑"><i class="fa fa-plus"></i>编辑</a>
-          <a href="javascript:;" class="btn btn-success" id="batchRecheckBtn" title="新增"><i class="fa fa-plus"></i>新增</a>
+          <a href="javascript:;" class="btn btn-success" id="add" title="新增"><i class="fa fa-plus"></i>新增</a>
           <a href="javascript:;" class="btn btn-primary" id="query" title="查询"><i class="fa fa-plus"></i>查询</a>
           <a href="javascript:;" class="btn btn-success" id="import" title="下载"><i class="fa fa-plus"></i>下载</a>
         </div>
@@ -112,15 +112,19 @@
         if(row.length<=0){
             alert("请选中一行")
         }else {
-            console.log(row);
             var id = row[0].skuId;
-
-
             $("#goodEdit").modal({
                 show: true,
                 remote: '${cmg}/toUpdate?skuId=' + id
             });
         }
+    })
+
+    $("#add").click(function () {
+        $("#goodEdit").modal({
+            show: true,
+            remote: '${cmg}/toSave'
+        });
     })
 
     $(function () {
@@ -159,7 +163,7 @@
                 width : 100,
                 align : 'center'
             },{
-                field : 'saveNum',
+                field : 'safeNum',
                 title : '安全库存',
                 width : 100,
                 align : 'center'
@@ -177,24 +181,33 @@
                 field : 'remnantNum',
                 title : '当前库存',
                 width : 150,
-                align : 'center',
-                formatter:function (value,row) {
-
-                }
+                align : 'center'
             },{
-                field : 'oriOrderId',
+                field : 'isPadding',
                 title : '是否需要补货',
                 width : 150,
                 align : 'center',
                 formatter:function (value,row) {
-
+                    if (value =='false'){
+                        return "不需要";
+                    }else if (value == 'true') {
+                        return "需要";
+                    }
                 }
+            },{
+                field : 'updateTime',
+                title : '更新时间',
+                width : 150,
+                align : 'center'
             }],
             onDblClickRow: function (row, $element) {
 
             }
         });
     })
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
 
 </script>
 </html>

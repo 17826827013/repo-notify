@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang3.time.DateUtils.parseDate;
+
 /**
  * 时间操作
  */
@@ -1014,13 +1016,28 @@ public class DateUtil {
 		return now;
 	}
 
+	/**
+	 *
+	 * */
+	public static int daysBetween(String date1,String date2) throws ParseException {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd");
 
+		Date d1 = sdf.parse(date1);
+		Date d2 = sdf.parse(date2);
 
-	public static void main(String[] args) {
-		String chkDate = "20181221";
-		if(null == chkDate || chkDate.trim().isEmpty() || !DateUtil.isValidDate(chkDate)){
-			System.out.println(1);
-		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d1);
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(d2);
+		long time2 = cal.getTimeInMillis();
+		long between_days=(time2-time1)/(1000*3600*24);
 
+		return Integer.parseInt(String.valueOf(between_days));
 	}
+
+
+
+	public static void main(String[] args) throws ParseException {
+		System.out.println(daysBetween("20191208","20180715"));
+    }
 }

@@ -14,47 +14,53 @@
 
     <form id="dmodalForm" class="form-horizontal">
 
-        <input class="form-control" name="skuId"  id="skuId" type="hidden" value="${Good.skuId!''}"/>
+        <div class="form-group">
+            <label class="control-label col-sm-2">SKU:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="skuId" id="skuId" type="text" />
+            </div>
+        </div>
+
 
         <div class="form-group">
             <label class="control-label col-sm-2">货品名称:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="goodsName" id="goodsName" type="text" value="${Good.goodsName!''}"/>
+                <input class="form-control" name="goodsName" id="goodsName" type="text" />
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2">最小数量:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="miniOrder" id="miniOrder" type="text" value="${Good.miniOrder!''}"/>
+                <input class="form-control" name="miniOrder" id="miniOrder" type="text" />
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2">安全库存:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="saveNum" id="saveNum" type="text" value="${Good.saveNum!''}"/>
+                <input class="form-control" name="saveNum" id="saveNum" type="text" />
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2">当前库存:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="remnantNum" id="remnantNum" type="text" value="${Good.remnantNum!''}"/>
+                <input class="form-control" name="remnantNum" id="remnantNum" type="text" />
             </div>
 
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2">消耗速率:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="consumeRatio" id="consumeRatio" type="text" value="${Good.consumeRatio!''}"/>
+                <input class="form-control" name="consumeRatio" id="consumeRatio" type="text" />
             </div>
 
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2">消耗周期:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="consumeCycle" id="consumeCycle" type="text" value="${Good.consumeCycle!''}"/>
+                <input class="form-control" name="consumeCycle" id="consumeCycle" type="text" />
             </div>
 
         </div>
@@ -82,7 +88,7 @@
 
             var layerIndex;
             $.ajax({
-                url: "${cmg}/update",
+                url: "${cmg}/save",
                 data: params,
                 timeout: 10000,
                 type: "post",

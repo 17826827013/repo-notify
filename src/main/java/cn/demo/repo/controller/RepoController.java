@@ -48,8 +48,7 @@ public class RepoController {
 
     @RequestMapping("/toSave")
     public String toSavePage(){
-
-        return "edit";
+        return "add";
     }
 
     @RequestMapping("/upload")
@@ -78,8 +77,8 @@ public class RepoController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public AjaxResult saveData(){
-        return AjaxResult.success();
+    public AjaxResult saveData(Good good){
+        return repoService.save(good);
     }
 
     @RequestMapping("/update")

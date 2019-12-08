@@ -8,15 +8,20 @@ import cn.demo.repo.service.excel.BaseAnalysisExcel;
 import cn.demo.repo.util.DateUtil;
 import cn.demo.repo.util.ExcelUtil;
 import cn.demo.repo.util.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.awt.geom.GeneralPath;
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,6 +62,7 @@ public class RepoService implements BaseAnalysisExcel {
             list = selectStorage(pageNum, pageSize, gList);
             dataGrid.setTotal((long) RepoData.CacheDataBase.size());
         }
+        list = isPadding(list);
         dataGrid.setRows(list);
         return dataGrid;
     }
@@ -71,6 +77,9 @@ public class RepoService implements BaseAnalysisExcel {
     public AjaxResult save(Good good){
         good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
         good.setCreateTime(DateUtil.currentDate4yyyyMMdd());
+        if (RepoData.CacheDataBase.get(good.getSkuId())!=null){
+           return AjaxResult.error("sku已存在,添加新的物品数据失败");
+        }
         RepoData.CacheDataBase.put(good.getSkuId(),good);
         storageJSONData(RepoData.CacheDataBase);
         return AjaxResult.success();
@@ -171,6 +180,35 @@ public class RepoService implements BaseAnalysisExcel {
         return null;
     }
 
+    /**
+     * 对是否需要补货状态的判断
+     */
+    public List<Good> isPadding(List<Good> goods) {
+        // Json 转List
+        goods = JSON.parseObject(JSON.toJSONString(goods), new TypeReference<List<Good>>() {
+        });
+        for (Good g : goods) {
+            if (g.getSafeNum() == null) {
+                g.setIsPadding(Boolean.FALSE.toString());
+            } else {
+                BigDecimal days = null;
+                try {
+                    days = new BigDecimal(DateUtil.daysBetween(DateUtil.currentDate4yyyyMMdd(), g.getUpdateTime()));
+
+                    BigDecimal[] results = days.divideAndRemainder(g.getConsumeCycle());
+                    if (results.length == 1) {
+                        //消耗量计算
+                        BigDecimal cons = results[0].divide(g.getConsumeRatio());
+                        g.setIsPadding(g.getSafeNum().compareTo(cons) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+                    }
+                } catch (Exception e) {
+                    log.error("比较计算失败", e);
+
+                }
+            }
+        }
+        return goods;
+    }
 
 
 }
