@@ -20,10 +20,11 @@ spring:
     multipart:
       max-file-size: -1
 logging:
-  path: /var/log/wx
+  file: log/repo.log
   level:
-    com.example.miaosha_idea: TRACE
+    cn.demo.repo: TRACE
     org.springframework: WARN
+
 server:
   port: 8080
   servlet:
@@ -31,3 +32,4 @@ server:
 
 excel:
   filePath: dataMap.json
+  col:

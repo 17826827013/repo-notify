@@ -22,10 +22,8 @@ import java.awt.geom.GeneralPath;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ Date  : Create in 14:01 2019/12/2
@@ -38,6 +36,7 @@ public class RepoService implements BaseAnalysisExcel {
     String filePath;
 
     public void executeData(List<Good> list) {
+        RepoData.CacheDataBase = new LinkedHashMap<>();
         for (Good good : list) {
             RepoData.CacheDataBase.put(good.getSkuId(), good);
         }
@@ -51,8 +50,9 @@ public class RepoService implements BaseAnalysisExcel {
         if (StringUtils.isNotEmpty(good.getSkuId())){
             //不知道为啥,但这么写不报错,所以舍近求远
             Object o = RepoData.CacheDataBase.get(good.getSkuId());
-            if (o!=null){
-                Good g = JSONObject.parseObject(o.toString(),Good.class);
+            if (o != null) {
+                Good g = JSON.parseObject(JSON.toJSONString(o), new TypeReference<Good>() {
+                });
                 list.add(g);
             }
             dataGrid.setTotal((long)list.size());
@@ -113,8 +113,10 @@ public class RepoService implements BaseAnalysisExcel {
             if(list.get(0)!=null){
                 good.setSkuId(list.get(0) == null ? null : ExcelUtil.getValue(list.get(0)));
                 good.setGoodsName(list.get(1) == null ? null : ExcelUtil.getValue(list.get(1)));
-//            good.setMiniOrder(list.get(2) == null?null:new Long(ExcelUtil.getValue(list.get(2))));
-//            good.setSaveNum(list.get(3) == null?null:new Long(ExcelUtil.getValue(list.get(3))));
+                good.setSafeNum(ExcelUtil.getValue(list.get(3))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(3))));
+                good.setConsumeRatio(ExcelUtil.getValue(list.get(4))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(4))));
+                good.setConsumeCycle(ExcelUtil.getValue(list.get(5))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(5))));
+                good.setRemnantNum(ExcelUtil.getValue(list.get(6))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(6))));
                 good.setCreateTime(DateUtil.currentDate4yyyyMMdd());
                 good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
             }

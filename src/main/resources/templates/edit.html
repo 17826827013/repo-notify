@@ -23,12 +23,12 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2">最小数量:</label>
-            <div class="col-sm-4">
-                <input class="form-control" name="miniOrder" id="miniOrder" type="text" value="${Good.miniOrder!''}"/>
-            </div>
-        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="control-label col-sm-2">最小数量:</label>-->
+            <!--<div class="col-sm-4">-->
+                <!--<input class="form-control" name="miniOrder" id="miniOrder" type="text" value="${Good.miniOrder!''}"/>-->
+            <!--</div>-->
+        <!--</div>-->
 
         <div class="form-group">
             <label class="control-label col-sm-2">安全库存:</label>
@@ -45,14 +45,14 @@
 
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">消耗速率:</label>
+            <label class="control-label col-sm-2">消耗速率(个):</label>
             <div class="col-sm-4">
                 <input class="form-control" name="consumeRatio" id="consumeRatio" type="text" value="${Good.consumeRatio!''}"/>
             </div>
 
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">消耗周期:</label>
+            <label class="control-label col-sm-2">消耗周期(天):</label>
             <div class="col-sm-4">
                 <input class="form-control" name="consumeCycle" id="consumeCycle" type="text" value="${Good.consumeCycle!''}"/>
             </div>
@@ -93,7 +93,7 @@
                 },
                 success:function(result,row){
                     layer.close(layerIndex);
-                    if(result.success){
+                    if(result.code=='0'){
                         layer.msg(result.msg);
                         setTimeout(function(){
                             $('#query').click();

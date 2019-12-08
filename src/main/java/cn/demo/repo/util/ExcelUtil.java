@@ -8,6 +8,9 @@ import org.apache.poi.ss.usermodel.Cell;
 public class ExcelUtil {
 
     public static String getValue(Cell cell) {
+        if (cell==null){
+            return null;
+        }
         int type = cell.getCellType();
         String value = null;
         switch (type) {

@@ -3,10 +3,7 @@ package cn.demo.repo.frame;
 import cn.demo.repo.model.Good;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RepoData {
 
-    public static Map<String,Good> CacheDataBase = new HashMap<>();
+    public static Map<String,Good> CacheDataBase = new LinkedHashMap<>();
 
     public static List<Ops> ops = new ArrayList<>();
 

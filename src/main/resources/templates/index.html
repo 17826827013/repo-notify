@@ -52,7 +52,7 @@
           <a href="javascript:;" class="btn btn-primary" id="edit" title="编辑"><i class="fa fa-plus"></i>编辑</a>
           <a href="javascript:;" class="btn btn-success" id="add" title="新增"><i class="fa fa-plus"></i>新增</a>
           <a href="javascript:;" class="btn btn-primary" id="query" title="查询"><i class="fa fa-plus"></i>查询</a>
-          <a href="javascript:;" class="btn btn-success" id="import" title="下载"><i class="fa fa-plus"></i>下载</a>
+          <!--<a href="javascript:;" class="btn btn-success" id="import" title="下载"><i class="fa fa-plus"></i>下载</a>-->
         </div>
 
         <table id="table" class="table-striped table-bordered table-hover text-nowrap" style="margin-top:30px"></table>
@@ -205,6 +205,7 @@
             }
         });
     })
+
     $('body').on('hidden.bs.modal', '.modal', function () {
         $(this).removeData('bs.modal');
     });

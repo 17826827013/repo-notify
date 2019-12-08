@@ -84,7 +84,8 @@ public class RepoController {
     @RequestMapping("/update")
     @ResponseBody
     public AjaxResult updateData(String skuId,Good good){
-        return repoService.updateData(skuId,good);
+        AjaxResult result =repoService.updateData(skuId,good);
+        return result;
     }
 
     @RequestMapping("/search")
