@@ -200,6 +200,14 @@
                 width : 150,
                 align : 'center'
             }],
+            rowStyle: function(row,index){
+                var strclass = "";
+                if(row.isPadding == 'true'){
+                    strclass = 'danger';
+                    warn = true;
+                }
+                return { classes : strclass}
+            },
             onDblClickRow: function (row, $element) {
 
             }

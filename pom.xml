@@ -67,6 +67,7 @@
     </dependencies>
 
     <build>
+        <finalName>repo-Notify</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
