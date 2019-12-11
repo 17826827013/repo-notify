@@ -9,7 +9,6 @@ import cn.demo.repo.util.DateUtil;
 import cn.demo.repo.util.ExcelUtil;
 import cn.demo.repo.util.StringUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.awt.geom.GeneralPath;
 import java.io.*;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ Date  : Create in 14:01 2019/12/2
@@ -62,7 +58,7 @@ public class RepoService implements BaseAnalysisExcel {
             list = selectStorage(pageNum, pageSize, gList);
             dataGrid.setTotal((long) RepoData.CacheDataBase.size());
         }
-        list = isPadding(list);
+        list = dataHandler(list);
         dataGrid.setRows(list);
         return dataGrid;
     }
@@ -183,9 +179,11 @@ public class RepoService implements BaseAnalysisExcel {
     }
 
     /**
-     * 对是否需要补货状态的判断
+     * 对数据进行处理
+     * 1.判断是否需要补货
+     * 2.计算当前库存
      */
-    public List<Good> isPadding(List<Good> goods) {
+    public List<Good> dataHandler(List<Good> goods) {
         // Json 转List
         goods = JSON.parseObject(JSON.toJSONString(goods), new TypeReference<List<Good>>() {
         });
@@ -195,19 +193,22 @@ public class RepoService implements BaseAnalysisExcel {
             } else {
                 BigDecimal days = null;
                 try {
-                    days = new BigDecimal(DateUtil.daysBetween(g.getUpdateTime(),DateUtil.currentDate4yyyyMMdd()));
+                    days = new BigDecimal(DateUtil.daysBetween(g.getUpdateTime(), DateUtil.currentDate4yyyyMMdd()));
 
                     BigDecimal[] results = days.divideAndRemainder(g.getConsumeCycle());
                     if (results.length > 0) {
                         //消耗量计算
                         BigDecimal cons = results[0].multiply(g.getConsumeRatio());
-                        BigDecimal remnantNum = g.getRemnantNum();
+                        //上次补货库存
+                        BigDecimal remnantNum = g.getRemnantNum() == null ? BigDecimal.ZERO : g.getRemnantNum();
+                        //当前库存
+                        BigDecimal currentNum = remnantNum.subtract(cons);
+                        g.setCurrentNum(currentNum);
                         //安全库存  和  (上次补货库存-消耗量) 进行比较
-                        g.setIsPadding(g.getSafeNum().compareTo(remnantNum.subtract(cons)) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+                        g.setIsPadding(g.getSafeNum().compareTo(currentNum) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
                     }
                 } catch (Exception e) {
-                    log.error("比较计算失败", e);
-
+                    log.error("数据处理失败", e);
                 }
             }
         }
