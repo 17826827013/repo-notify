@@ -166,10 +166,11 @@ public class RepoService  {
             if (g.getSafeNum() == null) {
                 g.setIsPadding(Boolean.FALSE.toString());
             } else {
-                BigDecimal days = null;
+                BigDecimal days ;
+                BigDecimal safeNum = g.getSafeNum();
                 try {
                     days = new BigDecimal(DateUtil.daysBetween(g.getUpdateTime(), DateUtil.currentDate4yyyyMMdd()));
-
+                    days.add(new BigDecimal("7"));
                     BigDecimal[] results = days.divideAndRemainder(g.getConsumeCycle());
                     if (results.length > 0) {
                         //消耗量计算
@@ -180,7 +181,7 @@ public class RepoService  {
                         BigDecimal currentNum = remnantNum.subtract(cons);
                         g.setCurrentNum(currentNum);
                         //安全库存  和  (上次补货库存-消耗量) 进行比较
-                        g.setIsPadding(g.getSafeNum().compareTo(currentNum) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+                        g.setIsPadding(safeNum.compareTo(currentNum) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
                     }
                 } catch (Exception e) {
                     log.error("数据处理失败", e);
