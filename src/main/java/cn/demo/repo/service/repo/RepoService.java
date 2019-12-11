@@ -4,18 +4,14 @@ import cn.demo.repo.frame.AjaxResult;
 import cn.demo.repo.frame.DataGrid;
 import cn.demo.repo.frame.RepoData;
 import cn.demo.repo.model.Good;
-import cn.demo.repo.service.excel.BaseAnalysisExcel;
 import cn.demo.repo.util.DateUtil;
-import cn.demo.repo.util.ExcelUtil;
 import cn.demo.repo.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -26,7 +22,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class RepoService implements BaseAnalysisExcel {
+public class RepoService  {
 
     @Value("${excel.filePath}")
     String filePath;
@@ -102,27 +98,6 @@ public class RepoService implements BaseAnalysisExcel {
         }
     }
 
-    @Override
-    public <T> T warpCell(List<Cell> list) {
-        Good good = new Good();
-        if (!CollectionUtils.isEmpty(list)) {
-            if(list.get(0)!=null){
-                good.setSkuId(list.get(0) == null ? null : ExcelUtil.getValue(list.get(0)));
-                good.setGoodsName(list.get(1) == null ? null : ExcelUtil.getValue(list.get(1)));
-                good.setSafeNum(ExcelUtil.getValue(list.get(3))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(3))));
-                good.setConsumeRatio(ExcelUtil.getValue(list.get(4))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(4))));
-                good.setConsumeCycle(ExcelUtil.getValue(list.get(5))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(5))));
-                good.setRemnantNum(ExcelUtil.getValue(list.get(6))==null?null:new BigDecimal(ExcelUtil.getValue(list.get(6))));
-                good.setCreateTime(DateUtil.currentDate4yyyyMMdd());
-                good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
-            }
-        }
-        if (good.getSkuId()!=null){
-            return (T)good;
-        }else {
-            return null;
-        }
-    }
 
     public void storageJSONData(Map<String,Good> dataMap){
 

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * @ Date  : Create in 14:31 2019/12/2
  */
 @Data
-public class Good extends BaseRowModel implements Serializable {
+public class Good implements Serializable {
 
 
     /**主键id*/
@@ -25,7 +25,7 @@ public class Good extends BaseRowModel implements Serializable {
     private String goodsName;
     /**最小数量*/
     @ExcelProperty(value = "Mini Order" , index = 2)
-    private BigDecimal miniOrder;
+    private String miniOrder;
     /**安全库存*/
     @ExcelProperty(value = "安全库存" , index = 3)
     private BigDecimal safeNum;
