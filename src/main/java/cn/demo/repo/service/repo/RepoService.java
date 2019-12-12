@@ -199,11 +199,19 @@ public class RepoService  {
     }
 
     public void excelImport(HttpServletResponse response, List<Good> data,String fileName){
-        //todo
         String sheetName = null;
+        String[] sheetParam = fileParam.split("/");
+        int sheetNum = sheetParam.length;
         ExcelWriter excelWriter = EasyExcel.write(fileName, Good.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
-//        writeSheet = EasyExcel.writerSheet(i, sheetName).build();
+        for (int i= 0;i<sheetNum;i++){
+            String[] param = sheetParam[i].split(",");
+            if (param.length==3){
+                //todo
+                writeSheet = EasyExcel.writerSheet(i, param[0]).build();
+            }
+        }
+
         excelWriter.write(data,writeSheet);
         excelWriter.finish();
 
