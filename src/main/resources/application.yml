@@ -32,4 +32,5 @@ server:
 
 excel:
   filePath: dataMap.json
-  col:
+  fileName: 易耗品管理
+  fileParam:

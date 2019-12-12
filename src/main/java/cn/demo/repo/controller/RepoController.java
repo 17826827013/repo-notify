@@ -17,8 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,8 +34,12 @@ public class RepoController {
 
     @Autowired
     RepoService repoService;
+
     @Value("${excel.filePath}")
     String filePath;
+
+    @Value("${excel.fileName}")
+    String fileName;
 
     @RequestMapping("/index")
     public String index(){
@@ -75,9 +82,12 @@ public class RepoController {
     }
 
     @RequestMapping("/import")
-    @ResponseBody
-    public AjaxResult importData(){
-        return AjaxResult.success();
+    public void importData(HttpServletResponse response) throws UnsupportedEncodingException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        String name = URLEncoder.encode(fileName, "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
+
     }
 
     @RequestMapping("/save")
@@ -95,7 +105,7 @@ public class RepoController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public DataGrid search(int pageNumber, int pageSize,Good good){
+    public DataGrid search(Integer pageNumber, Integer pageSize,Good good){
         return repoService.search(good,pageNumber,pageSize);
     }
 

@@ -6,13 +6,18 @@ import cn.demo.repo.frame.RepoData;
 import cn.demo.repo.model.Good;
 import cn.demo.repo.util.DateUtil;
 import cn.demo.repo.util.StringUtils;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
@@ -27,6 +32,9 @@ public class RepoService  {
     @Value("${excel.filePath}")
     String filePath;
 
+    @Value("${excel.fileParam}")
+    String fileParam;
+
     public void executeData(List<Good> list) {
         RepoData.CacheDataBase = new LinkedHashMap<>();
         for (Good good : list) {
@@ -36,7 +44,7 @@ public class RepoService  {
         log.info("装载excel数据完成并写入本地文件:{}",filePath);
     }
 
-    public DataGrid<Good> search(Good good,int pageNum,int pageSize){
+    public DataGrid<Good> search(Good good,Integer pageNum,Integer pageSize){
         DataGrid<Good> dataGrid = new DataGrid<>();
         List<Good> list = new ArrayList<>();
         if (StringUtils.isNotEmpty(good.getSkuId())){
@@ -97,7 +105,6 @@ public class RepoService  {
             return goodList;
         }
     }
-
 
     public void storageJSONData(Map<String,Good> dataMap){
 
@@ -191,5 +198,14 @@ public class RepoService  {
         return goods;
     }
 
+    public void excelImport(HttpServletResponse response, List<Good> data,String fileName){
+        //todo
+        String sheetName = null;
+        ExcelWriter excelWriter = EasyExcel.write(fileName, Good.class).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
+//        writeSheet = EasyExcel.writerSheet(i, sheetName).build();
+        excelWriter.write(data,writeSheet);
+        excelWriter.finish();
 
+    }
 }
