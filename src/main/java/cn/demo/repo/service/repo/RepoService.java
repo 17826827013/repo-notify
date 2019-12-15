@@ -214,9 +214,11 @@ public class RepoService  {
         for (int i= 0;i<sheetNum;i++){
             String[] param = sheetParam[i].split(",");
             if (param.length==3){
-                //todo
                 writeSheet = EasyExcel.writerSheet(i, param[0]).build();
-                List<Good> dataList = data.subList(new Integer(param[1]),new Integer(param[2]));
+                List<Good> dataList = data.subList(
+                        new Integer(param[1]).compareTo(data.size())>1?data.size():new Integer(param[1])
+                        ,new Integer(param[2]).compareTo(data.size()>1?data.size():new Integer(param[2]))
+                );
                 excelWriter.write(dataList,writeSheet);
             }
         }
