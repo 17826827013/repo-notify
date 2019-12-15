@@ -82,12 +82,12 @@ public class RepoController {
     }
 
     @RequestMapping("/import")
-    public void importData(HttpServletResponse response) throws UnsupportedEncodingException {
+    public void importData(HttpServletResponse response,Good good) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         String name = URLEncoder.encode(fileName, "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
-
+        repoService.excelImport(response,search(null,null,good).getRows(),fileName+".xlsx");
     }
 
     @RequestMapping("/save")

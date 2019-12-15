@@ -32,5 +32,7 @@ server:
 
 excel:
   filePath: dataMap.json
+  #下载的文件名 配置
   fileName: 易耗品管理
-  fileParam: 服务用具,0,7/礼品包装8,10/陈列部-货架顶端灯片,11,12/其他,13,16
+  # excel 分sheet , 每个sheet 第几到第几条数据
+  fileParam: 服务用具,0,17/礼品包装,17,37/陈列部-货架顶端灯片,37,81/其他,81,93

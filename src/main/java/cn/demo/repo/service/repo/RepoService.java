@@ -12,6 +12,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.parser.Feature;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
@@ -147,10 +148,15 @@ public class RepoService  {
                 fileReader.close();
                 reader.close();
                 jsonStr = sb.toString();
-                Map<String,Good> map = (Map<String, Good>) JSONObject.parse(jsonStr);
+                //为了保证序列化时的 map 顺序 使用这种序列话的方式 会增加一倍左右的序列化时间
+                LinkedHashMap<String, Good> json = JSON.parseObject(jsonStr,LinkedHashMap.class, Feature.OrderedField);
+                JSONObject jsonObject=new JSONObject(true);
+                jsonObject.putAll(json);
+
+//                Map<String,Good> map = (Map<String, Good>) JSONObject.parse(jsonStr);
                 long e = System.currentTimeMillis();
                 log.info("读取数据json耗时:{}",e-s);
-                return map;
+                return json;
             }else{
                 log.info("当前不存在json数据文件,需要手工上传excel");
             }
@@ -198,21 +204,23 @@ public class RepoService  {
         return goods;
     }
 
-    public void excelImport(HttpServletResponse response, List<Good> data,String fileName){
+    public void excelImport(HttpServletResponse response, List<Good> data,String fileName) throws IOException {
         String sheetName = null;
         String[] sheetParam = fileParam.split("/");
         int sheetNum = sheetParam.length;
-        ExcelWriter excelWriter = EasyExcel.write(fileName, Good.class).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
+        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), Good.class).build();
+
+        WriteSheet writeSheet ;
         for (int i= 0;i<sheetNum;i++){
             String[] param = sheetParam[i].split(",");
             if (param.length==3){
                 //todo
                 writeSheet = EasyExcel.writerSheet(i, param[0]).build();
+                List<Good> dataList = data.subList(new Integer(param[1]),new Integer(param[2]));
+                excelWriter.write(dataList,writeSheet);
             }
         }
 
-        excelWriter.write(data,writeSheet);
         excelWriter.finish();
 
     }
