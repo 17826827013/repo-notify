@@ -68,9 +68,19 @@ public class RepoService  {
         return dataGrid;
     }
 
-    public AjaxResult updateData(String skuId,Good good){
-        good.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
-        RepoData.CacheDataBase.put(skuId,good);
+    public AjaxResult updateData(String skuId,Good updateG){
+        updateG.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
+        Object o = RepoData.CacheDataBase.get(skuId);
+        if (o != null) {
+            Good oldGood = JSON.parseObject(JSON.toJSONString(o), new TypeReference<Good>() {
+            });
+            oldGood.setGoodsName(updateG.getGoodsName());
+            oldGood.setSafeNum(updateG.getSafeNum());
+            oldGood.setRemnantNum(updateG.getRemnantNum());
+            oldGood.setConsumeRatio(updateG.getConsumeRatio());
+            oldGood.setConsumeCycle(updateG.getConsumeCycle());
+            RepoData.CacheDataBase.put(skuId,oldGood);
+        }
         storageJSONData(RepoData.CacheDataBase);
         return AjaxResult.success();
     }
@@ -179,23 +189,37 @@ public class RepoService  {
             if (g.getSafeNum() == null) {
                 g.setIsPadding(Boolean.FALSE.toString());
             } else {
-                BigDecimal days ;
+                BigDecimal days = BigDecimal.ZERO;
                 BigDecimal safeNum = g.getSafeNum();
                 try {
                     days = new BigDecimal(DateUtil.daysBetween(g.getUpdateTime(), DateUtil.currentDate4yyyyMMdd()));
-                    days.add(new BigDecimal("7"));
-                    BigDecimal[] results = days.divideAndRemainder(g.getConsumeCycle());
-                    if (results.length > 0) {
+                    //用于计算库存的days
+                    BigDecimal safeDays = days.add(new BigDecimal("7"));
+
+                    BigDecimal[] num4Current = days.divideAndRemainder(g.getConsumeCycle());
+                    if (num4Current.length > 0) {
                         //消耗量计算
-                        BigDecimal cons = results[0].multiply(g.getConsumeRatio());
+                        BigDecimal cons = num4Current[0].multiply(g.getConsumeRatio());
                         //上次补货库存
                         BigDecimal remnantNum = g.getRemnantNum() == null ? BigDecimal.ZERO : g.getRemnantNum();
                         //当前库存
                         BigDecimal currentNum = remnantNum.subtract(cons);
                         g.setCurrentNum(currentNum);
-                        //安全库存  和  (上次补货库存-消耗量) 进行比较
-                        g.setIsPadding(safeNum.compareTo(currentNum) > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
                     }
+
+                    BigDecimal[] num4Safe = safeDays.divideAndRemainder(g.getConsumeCycle());
+                    if (num4Safe.length > 0){
+                        //消耗量计算
+                        BigDecimal cons = num4Safe[0].multiply(g.getConsumeRatio());
+                        //上次补货库存
+                        BigDecimal remnantNum = g.getRemnantNum() == null ? BigDecimal.ZERO : g.getRemnantNum();
+                        //扣减后库存(上次补货库存-消耗量)
+                        BigDecimal subedNum = remnantNum.subtract(cons);
+                        //安全库存  和  (上次补货库存-消耗量) 进行比较
+                        g.setIsPadding(safeNum.compareTo(subedNum) >= 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+                    }
+
+
                 } catch (Exception e) {
                     log.error("数据处理失败", e);
                 }

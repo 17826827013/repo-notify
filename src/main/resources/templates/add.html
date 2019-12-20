@@ -39,7 +39,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2">安全库存:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="saveNum" id="saveNum" type="text" />
+                <input class="form-control" name="safeNum" id="saveNum" type="text" />
             </div>
         </div>
 
@@ -99,8 +99,8 @@
                 },
                 success:function(result,row){
                     layer.close(layerIndex);
-                    if(result.success){
-                        layer.msg(result.code=='0');
+                    if(result.code=='0'){
+                        layer.msg(result.msg);
                         setTimeout(function(){
                             $('#query').click();
                             $('#goodEdit').modal('hide');
