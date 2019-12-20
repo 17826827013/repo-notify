@@ -69,7 +69,7 @@ public class RepoService  {
     }
 
     public AjaxResult updateData(String skuId,Good updateG){
-        updateG.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
+
         Object o = RepoData.CacheDataBase.get(skuId);
         if (o != null) {
             Good oldGood = JSON.parseObject(JSON.toJSONString(o), new TypeReference<Good>() {
@@ -79,6 +79,7 @@ public class RepoService  {
             oldGood.setRemnantNum(updateG.getRemnantNum());
             oldGood.setConsumeRatio(updateG.getConsumeRatio());
             oldGood.setConsumeCycle(updateG.getConsumeCycle());
+            oldGood.setUpdateTime(DateUtil.currentDate4yyyyMMdd());
             RepoData.CacheDataBase.put(skuId,oldGood);
         }
         storageJSONData(RepoData.CacheDataBase);
